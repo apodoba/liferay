@@ -11,6 +11,7 @@
 .tern-project
 target/
 */docroot/WEB-INF/classes
+bin/
 
 
 #GIT #
