@@ -16,7 +16,7 @@ import com.liferay.portal.model.User;
 
 @Component
 public class NotificationService {
-	
+	/* TODO : I would recommend to put these string to properties file. */
 	private static final String SEND_FROM = "arinapodoba@gmail.com";
 	private static final String SUBJECT = "Public Utility";
 

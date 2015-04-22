@@ -1,5 +1,6 @@
 package com.portal.domen;
 
+/* TODO : I would recommend to rename this enum to ServiceType */
 public enum Service {
 	HOT_WATER(1, "Hot water"),
 	COLD_WATER(2, "Cold water"),

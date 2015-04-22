@@ -57,6 +57,7 @@ public class WeatherUtil {
 	}
 	
 	private static JSONObject getWeatherResponse() throws JSONException, IOException{
+			/* TODO : I would recommend to put current location into properties file. */
 			URL url = new URL("http://api.openweathermap.org/data/2.5/weather?q=Minsk,by");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
