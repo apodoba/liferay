@@ -16,6 +16,7 @@ import com.notification.service.StatisticService;
 import com.portal.domen.Service;
 import com.portal.utils.Helper;
 
+/* TODO : I would recommend to put the values for 'cron' parameter into properties file. */
 public class NotificationScheduler {
 	
 	private static final int CABINET_ROLE_ID = 18888;

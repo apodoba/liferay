@@ -31,7 +31,7 @@ import com.portal.domen.Payment;
 
 @Component
 public class NotificationService {
-	
+	/* TODO : I would recommend to put this string into properties file. */
 	private static final String SEND_FROM = "arinapodoba@gmail.com";
 
     private JavaMailSender mailSender;
@@ -43,6 +43,7 @@ public class NotificationService {
     public void sendPaymentEmail(final User user, final Payment payment) {
         MimeMessagePreparator preparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) throws Exception {
+            	/* TODO : I would recommend to put this string into properties file. */
                 String subject = "Payment for Public Utilities";
                 ByteArrayOutputStream outputStream = null;
                 
@@ -88,6 +89,7 @@ public class NotificationService {
         
         Paragraph preface = new Paragraph();
 		preface.add(new Paragraph(" "));
+		/* TODO : I would recommend to put this string into properties file. */
 		preface.add(new Paragraph("Payment for Public Utilities",new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD)));
 		preface.add(new Paragraph(" "));
 		preface.add(new Paragraph(" "));
@@ -143,7 +145,8 @@ public class NotificationService {
 		document.add(tableParagraph);
 		document.add(new Paragraph(" "));
 		document.add(new Paragraph(" "));
-         
+        
+		/* TODO : I would recommend to put this string into properties file. */
 		String url = "http://t1.gstatic.com/images?q=tbn:ANd9GcRgZUNpz0BSf3yhRaSygGZk8vwPeCpzOQ5E10-J63HeKHIbntET";
         Image image = Image.getInstance(url);
         image.setAlignment(Element.ALIGN_RIGHT);

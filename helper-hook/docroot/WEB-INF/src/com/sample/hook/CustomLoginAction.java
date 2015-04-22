@@ -18,7 +18,7 @@ public class CustomLoginAction extends BaseStrutsPortletAction {
 
 		originalStrutsPortletAction.processAction(originalStrutsPortletAction,
 				portletConfig, actionRequest, actionResponse);
-
+		/* TODO : I would recommend to put this string into properties file. */
 		actionResponse.sendRedirect("/group/site/my-cabinet");
 	}
 
