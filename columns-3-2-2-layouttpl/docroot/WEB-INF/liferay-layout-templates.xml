@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE layout-templates PUBLIC "-//Liferay//DTD Layout Templates 6.2.0//EN" "http://www.liferay.com/dtd/liferay-layout-templates_6_2_0.dtd">
+
+<layout-templates>
+	<custom>
+		<layout-template id="columns_3_2_2" name="Columns 3 2 2">
+			<template-path>/columns_3_2_2.tpl</template-path>
+			<wap-template-path>/columns_3_2_2.wap.tpl</wap-template-path>
+			<thumbnail-path>/columns_3_2_2.png</thumbnail-path>
+		</layout-template>
+	</custom>
+</layout-templates>

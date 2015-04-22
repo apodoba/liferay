@@ -1,0 +1,9 @@
+<html>
+    <body>
+        <h3>Dear ${user.firstName} ${user.lastName}</h3>
+
+        <div>
+            We hasten to remind you that you need to pay for Public Utility services 
+        </div>
+    </body>
+</html>
