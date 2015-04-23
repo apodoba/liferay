@@ -34,6 +34,14 @@
 		<property name="order" value="1" />
 	</bean>
 	
-	 <bean id="weatherScheduler" class="com.weather.scheduler.WeatherScheduler"></bean>
+	<bean id="weatherScheduler" class="com.weather.scheduler.WeatherScheduler"></bean>
+	 
+	<bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    		<property name="locations">
+        		<list>
+            			<value>classpath:portlet.properties</value>
+        		</list>
+    		</property>
+	</bean>
 		
 </beans>

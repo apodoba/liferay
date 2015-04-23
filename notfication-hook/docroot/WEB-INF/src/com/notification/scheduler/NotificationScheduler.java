@@ -4,21 +4,24 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.UserLocalServiceUtil;
+import com.liferay.util.portlet.PortletProps;
 import com.notification.letter.NotificationService;
 import com.notification.service.PaymentService;
 import com.notification.service.StatisticService;
-import com.portal.domen.Service;
+import com.portal.domen.ServiceType;
 import com.portal.utils.Helper;
 
 public class NotificationScheduler {
 	
-	private static final int CABINET_ROLE_ID = 18888;
+	private static final String CABINET_ROLE_ID = "cabinet.role.id";
+	private static Logger LOGGER = Logger.getLogger(NotificationScheduler.class);
 
 	@Autowired
 	PaymentService paymentService;
@@ -29,9 +32,16 @@ public class NotificationScheduler {
 	@Autowired
 	NotificationService notificationService;
 
-	@Scheduled(cron = "0 00 00 16 * ?")
-	public void sendNotification() throws SystemException {
-		List<User> allUsers = UserLocalServiceUtil.getRoleUsers(CABINET_ROLE_ID);
+	@Scheduled(cron="${notification.scheduler.period}")
+	public void sendNotification() {
+		List<User> allUsers = null;
+		try {
+			allUsers = UserLocalServiceUtil.getRoleUsers(Integer.valueOf(PortletProps.get(CABINET_ROLE_ID)));
+		} catch (NumberFormatException e) {
+			LOGGER.error(e.getMessage(), e);
+		} catch (SystemException e) {
+			LOGGER.error(e.getMessage(), e);
+		}
 		Calendar currentDate = Calendar.getInstance();
 		currentDate.add(Calendar.MONTH, -1);
 		for(User user: allUsers){
@@ -41,16 +51,15 @@ public class NotificationScheduler {
 			}
 		}
 	}
-
-	@Scheduled(cron = "0 00 00 20 * ?")
+	
+	@Scheduled(cron="${database.scheduler.period}")
 	public void updateStatisticPrice() {
-		System.out.println("Scheduler");
 		Calendar currentDate = Calendar.getInstance();
 		currentDate.add(Calendar.MONTH, 1);
 		int year = currentDate.get(Calendar.YEAR);
 		int month = currentDate.get(Calendar.MONTH);
 
-		for (Service service : Service.values()) {
+		for (ServiceType service : ServiceType.values()) {
 			BigDecimal price = Helper.getPriceOfService();
 			statisticService.updateStatisticPrice(price, service.getId(), month, year);
 		}

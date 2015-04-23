@@ -10,6 +10,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,6 +43,8 @@ public class PaymentPortletController {
 	private static final String BALANCE_ERROR = "balanceError";
 	private static final String SERVICE_PRICE_ERROR = "servicePriceError";
 	
+	private static Logger LOGGER = Logger.getLogger(PaymentPortletController.class);
+	
 	@Autowired
 	private PaymentService paymentService;
 	
@@ -55,7 +58,6 @@ public class PaymentPortletController {
 
 	@ActionMapping(params = "action=addPayment")
 	public void addPayment(ActionRequest actionRequest, ActionResponse actionResponse, Model model) throws IOException, PortletException {
-		System.out.println("PAYMENT");
 		Payment payment = new Payment();
 		payment.setMonth(ParamUtil.get(actionRequest, SqlUtil.FIELD_MONTH, 0));
 		payment.setYear(ParamUtil.get(actionRequest, SqlUtil.FIELD_YEAR, 0));
@@ -64,15 +66,20 @@ public class PaymentPortletController {
 		try {
 			paymentService.addPayment(payment);
 			notificationService.sendPaymentEmail(getUser(actionRequest), payment);
+			LOGGER.info("Successful payment");
 			SessionMessages.add(actionRequest, SUCCEESS);
 		} catch (PaymentException e) {
 			SessionErrors.add(actionRequest, PAYMENT_ERROR);
+			LOGGER.error(e.getMessage(), e);
 		} catch (EmptyFieldException e) {
 			SessionErrors.add(actionRequest, EMPTY_ERROR);
+			LOGGER.error(e.getMessage(), e);
 		} catch (BalanceException e) {
 			SessionErrors.add(actionRequest, BALANCE_ERROR);
+			LOGGER.error(e.getMessage(), e);
 		} catch (ServicePriceEmptyException e) {
 			SessionErrors.add(actionRequest, SERVICE_PRICE_ERROR);
+			LOGGER.error(e.getMessage(), e);
 		}
 	}
 

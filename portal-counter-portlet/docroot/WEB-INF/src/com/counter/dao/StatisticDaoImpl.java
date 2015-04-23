@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.portal.domen.Service;
+import com.portal.domen.ServiceType;
 import com.portal.domen.Statistic;
 import com.portal.utils.SqlUtil;
 
@@ -71,7 +71,7 @@ public class StatisticDaoImpl implements StatisticDao {
 	}
 
 	@Override
-	public Statistic getStatistic(Service service, long userId, int year, int month) {
+	public Statistic getStatistic(ServiceType service, long userId, int year, int month) {
 		Statistic statistic = null;
 		try{
 			statistic = (Statistic) jdbcTemplate.queryForObject(SqlUtil.SELECT_STATISTIC_BY_PERIOD_AND_SERVICE,
@@ -102,7 +102,7 @@ public class StatisticDaoImpl implements StatisticDao {
 			statistic.setMonth(rs.getInt(SqlUtil.FIELD_MONTH));
 			statistic.setPrice(rs.getBigDecimal(SqlUtil.FIELD_STATISTIC_PRICE));
 			statistic.setYear(rs.getInt(SqlUtil.FIELD_YEAR));
-			statistic.setService(Service.valueOf(rs.getInt(SqlUtil.FIELD_STATISTIC_SERVICE)));
+			statistic.setService(ServiceType.valueOf(rs.getInt(SqlUtil.FIELD_STATISTIC_SERVICE)));
 			return statistic;
 		}
 	}

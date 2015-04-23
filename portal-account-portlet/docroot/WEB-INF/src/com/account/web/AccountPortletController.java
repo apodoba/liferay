@@ -11,6 +11,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +37,8 @@ public class AccountPortletController {
 	private static final String VIEW = "view";
 	private static final String HISTORY = "history";
 	private static final String BALANCE = "balance";
+	
+	private static Logger LOGGER = Logger.getLogger(AccountPortletController.class);
 
 	@Autowired
 	private BalanceService balanceService;
@@ -58,8 +61,10 @@ public class AccountPortletController {
 		try {
 			balanceService.addBalance(payment);
 			SessionMessages.add(actionRequest, "success");
+			LOGGER.info("Balance successfully increased");
 		} catch (EmptyFieldException e) {
 			SessionErrors.add(actionRequest, "emptyError");
+			LOGGER.error(e.getMessage(), e);
 		}
 	}
 

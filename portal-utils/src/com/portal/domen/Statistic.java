@@ -10,7 +10,7 @@ public class Statistic {
 	private int statisticId;
 	private long userId;
 	private double value;
-	private Service service;
+	private ServiceType service;
 	private int month;
 	private int year;
 	private BigDecimal price;
@@ -42,11 +42,11 @@ public class Statistic {
 		this.value = value;
 	}
 
-	public Service getService() {
+	public ServiceType getService() {
 		return service;
 	}
 
-	public void setService(Service service) {
+	public void setService(ServiceType service) {
 		this.service = service;
 	}
 

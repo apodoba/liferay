@@ -8,8 +8,11 @@ import javax.portlet.RenderResponse;
 
 import com.liferay.portal.kernel.struts.BaseStrutsPortletAction;
 import com.liferay.portal.kernel.struts.StrutsPortletAction;
+import com.liferay.util.portlet.PortletProps;
 
 public class CustomLoginAction extends BaseStrutsPortletAction {
+	
+	private static final String CABINET_URL = "private.cabinet.url";
 
 	@Override
 	public void processAction(StrutsPortletAction originalStrutsPortletAction,
@@ -18,8 +21,7 @@ public class CustomLoginAction extends BaseStrutsPortletAction {
 
 		originalStrutsPortletAction.processAction(originalStrutsPortletAction,
 				portletConfig, actionRequest, actionResponse);
-
-		actionResponse.sendRedirect("/group/site/my-cabinet");
+		actionResponse.sendRedirect(PortletProps.get(CABINET_URL));
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
+import org.apache.log4j.Logger;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -27,13 +28,14 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.liferay.portal.model.User;
+import com.liferay.util.portlet.PortletProps;
 import com.portal.domen.Payment;
 
 @Component
 public class NotificationService {
+	private static final String EMAIL_SENDER = "email.sender";
 	
-	private static final String SEND_FROM = "arinapodoba@gmail.com";
-
+	private static Logger LOGGER = Logger.getLogger(NotificationService.class);	
     private JavaMailSender mailSender;
 
     public void setMailSender(JavaMailSender mailSender) {
@@ -43,7 +45,7 @@ public class NotificationService {
     public void sendPaymentEmail(final User user, final Payment payment) {
         MimeMessagePreparator preparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) throws Exception {
-                String subject = "Payment for Public Utilities";
+                String subject = PortletProps.get("email.subject");
                 ByteArrayOutputStream outputStream = null;
                 
                 try {           
@@ -62,20 +64,23 @@ public class NotificationService {
                     mimeMessage.setContent(mimeMultipart);
                     mimeMessage.setSubject(subject);
                     MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
-                    message.setFrom(SEND_FROM);
+                    message.setFrom(PortletProps.get(EMAIL_SENDER));
                     message.setTo(user.getEmailAddress());
                    
                 } catch(Exception ex) {
-                    ex.printStackTrace();
+                	LOGGER.error(ex.getMessage(), ex);
                 } finally {
                     if(null != outputStream) {
                         try { outputStream.close(); outputStream = null; }
-                        catch(Exception ex) { }
+                        catch(Exception ex) { 
+                        	LOGGER.error(ex.getMessage(), ex);
+                        }
                     }
                 }
             }
         };
         this.mailSender.send(preparator);
+        LOGGER.info("Payment letter was sent");
     }
     
     public void writePdf(OutputStream outputStream, Payment payment) throws Exception {
@@ -88,7 +93,7 @@ public class NotificationService {
         
         Paragraph preface = new Paragraph();
 		preface.add(new Paragraph(" "));
-		preface.add(new Paragraph("Payment for Public Utilities",new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD)));
+		preface.add(new Paragraph(PortletProps.get("email.subject"), new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD)));
 		preface.add(new Paragraph(" "));
 		preface.add(new Paragraph(" "));
 		document.add(preface);
@@ -144,7 +149,7 @@ public class NotificationService {
 		document.add(new Paragraph(" "));
 		document.add(new Paragraph(" "));
          
-		String url = "http://t1.gstatic.com/images?q=tbn:ANd9GcRgZUNpz0BSf3yhRaSygGZk8vwPeCpzOQ5E10-J63HeKHIbntET";
+		String url = PortletProps.get("signature.url");;
         Image image = Image.getInstance(url);
         image.setAlignment(Element.ALIGN_RIGHT);
         image.scaleAbsolute(80, 40);

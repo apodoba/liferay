@@ -10,9 +10,8 @@
 .springBeans
 .tern-project
 target/
-*/docroot/WEB-INF/classes
-bin/
-.sass-cache/
+docroot/WEB-INF/classes
+
 
 #GIT #
 ######

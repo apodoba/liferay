@@ -9,12 +9,12 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletException;
 import javax.portlet.PortletRequest;
-import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,7 +41,7 @@ import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.User;
-import com.portal.domen.Service;
+import com.portal.domen.ServiceType;
 import com.portal.domen.Statistic;
 import com.portal.utils.Helper;
 import com.portal.utils.SqlUtil;
@@ -59,6 +59,8 @@ public class CounterPortletController {
 	private static final String EMPTY_ERROR = "emptyError";
 	private static final String EDIT_ERROR = "editError";
 	private static final String SUCCESS = "success";
+	
+	private static Logger LOGGER = Logger.getLogger(CounterPortletController.class);
 
 	private List<Statistic> statistics;
 
@@ -67,39 +69,24 @@ public class CounterPortletController {
 
 	@RenderMapping
 	public String handleViewRequest(RenderRequest renderRequest, RenderResponse renderResponse) {
-		Object monthAttribute = renderRequest.getPortletSession().getAttribute(SEARCH_MONTH);
-		Object yearAttribute = renderRequest.getPortletSession().getAttribute(SEARCH_YEAR);
-
-		int year = yearAttribute != null ? (int) yearAttribute : 0;
-		int month = monthAttribute != null ? (int) monthAttribute : 0;
-		statistics = statisticService.getAllStatisticByPeriod(getUser(renderRequest).getUserId(), month, year);
-
-		renderRequest.setAttribute(STATISTICS, statistics);
-		renderRequest.setAttribute(TOTAL_PRICE, Helper.getTotalPrice(statistics));
-
-		return VIEW;
-	}
-
-	@RenderMapping(params = "action=searchService")
-	public String searchRequest(RenderRequest renderRequest, RenderResponse renderResponse) {
 		int month = ParamUtil.get(renderRequest, SEARCH_MONTH, 0);
 		int year = ParamUtil.get(renderRequest, SEARCH_YEAR, 0);
+
 		statistics = statisticService.getAllStatisticByPeriod(getUser(renderRequest).getUserId(), month, year);
 
 		renderRequest.setAttribute(STATISTICS, statistics);
 		renderRequest.setAttribute(TOTAL_PRICE, Helper.getTotalPrice(statistics));
-
-		PortletSession portletSession = renderRequest.getPortletSession();
-		portletSession.setAttribute(SEARCH_MONTH, month, PortletSession.PORTLET_SCOPE);
-		portletSession.setAttribute(SEARCH_YEAR, year, PortletSession.PORTLET_SCOPE);
 
 		return VIEW;
 	}
 
 	@ActionMapping(params = "action=addService")
 	public void addService(ActionRequest actionRequest, ActionResponse actionResponse, Model model) throws IOException, PortletException {
+		actionResponse.setRenderParameter(SEARCH_MONTH, ParamUtil.get(actionRequest, SEARCH_MONTH, "0"));
+		actionResponse.setRenderParameter(SEARCH_YEAR, ParamUtil.get(actionRequest, SEARCH_YEAR, "0"));
+
 		Statistic statistic = new Statistic();
-		statistic.setService(Service.valueOf(ParamUtil.get(actionRequest, SERVICE, 0)));
+		statistic.setService(ServiceType.valueOf(ParamUtil.get(actionRequest, SERVICE, 0)));
 		statistic.setMonth(ParamUtil.get(actionRequest, SqlUtil.FIELD_MONTH, 0));
 		statistic.setYear(ParamUtil.get(actionRequest, SqlUtil.FIELD_YEAR, 0));
 		statistic.setValue(ParamUtil.get(actionRequest, SqlUtil.FIELD_VALUE, 0));
@@ -108,10 +95,13 @@ public class CounterPortletController {
 		try {
 			statisticService.addStatistic(statistic);
 			SessionMessages.add(actionRequest, SUCCESS);
+			LOGGER.info("Statistic successfully added");
 		} catch (EmptyStatisticException e) {
+			LOGGER.error(e.getMessage(), e);
 			SessionErrors.add(actionRequest, EMPTY_ERROR);
 		} catch (EditStaticException e) {
 			SessionErrors.add(actionRequest, EDIT_ERROR);
+			LOGGER.error(e.getMessage(), e);
 		}
 	}
 
@@ -142,8 +132,8 @@ public class CounterPortletController {
 
 			out.flush();
 			out.close();
-		} catch (Exception e2) {
-			e2.printStackTrace();
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
 		}
 	}
 

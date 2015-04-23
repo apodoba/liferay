@@ -13,11 +13,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import com.liferay.portal.model.User;
+import com.liferay.util.portlet.PortletProps;
 
 @Component
 public class NotificationService {
 	
-	private static final String SEND_FROM = "arinapodoba@gmail.com";
+	private static final String EMAIL_SENDER = "email.sender";
 	private static final String SUBJECT = "Public Utility";
 
     private JavaMailSender mailSender;
@@ -35,7 +36,7 @@ public class NotificationService {
         MimeMessagePreparator preparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) throws Exception {
                 MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
-                message.setFrom(SEND_FROM);
+                message.setFrom(PortletProps.get(EMAIL_SENDER));
                 message.setTo(user.getEmailAddress());
                 Map<String, User> model = new HashMap<String, User>();
                 model.put("user", user);

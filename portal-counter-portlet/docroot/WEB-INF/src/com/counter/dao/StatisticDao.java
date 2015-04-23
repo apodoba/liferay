@@ -3,7 +3,7 @@ package com.counter.dao;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.portal.domen.Service;
+import com.portal.domen.ServiceType;
 import com.portal.domen.Statistic;
 
 public interface StatisticDao {
@@ -16,7 +16,7 @@ public interface StatisticDao {
 	
 	public void updateStatisticValue(Statistic statistic);
 	
-	public Statistic getStatistic(Service service, long userId, int year, int month);
+	public Statistic getStatistic(ServiceType service, long userId, int year, int month);
 	
 	public BigDecimal getPeriodPrice(long userId, int year, int month);
 }

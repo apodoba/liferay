@@ -9,7 +9,7 @@
 <%@ page import="com.liferay.portal.kernel.util.CalendarFactoryUtil" %>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Calendar"%>
-<%@page import="com.portal.domen.Service"%>
+<%@page import="com.portal.domen.ServiceType"%>
 <%@page import="com.portal.utils.Helper"%>
 <%@page import="com.portal.utils.Month"%>
 <%@page import="com.portal.domen.Statistic"%>
@@ -21,15 +21,11 @@
 	List<Statistic> statistics = (List<Statistic>) renderRequest.getAttribute("statistics");
 	BigDecimal totalPrice = (BigDecimal) renderRequest.getAttribute("totalPrice");
 	
-	Object monthAttribute = renderRequest.getPortletSession().getAttribute("searchMonth");
-	Object yearAttribute = renderRequest.getPortletSession().getAttribute("searchYear");
-	
-	int searchYear = yearAttribute != null ? (Integer) yearAttribute : 0;
-	int searchMonth = monthAttribute != null ? (Integer) monthAttribute : 0;
+	int searchMonth = ParamUtil.get(renderRequest, "searchMonth", 0);
+	int searchYear = ParamUtil.get(renderRequest, "searchYear", 0);
 %>
 
 <portlet:renderURL var="searchServiceURl">
-	<portlet:param name="action" value="searchService" />
 </portlet:renderURL>
 <portlet:actionURL name="addService" var="addServiceURL">
     <portlet:param name="action" value="addService" />
@@ -45,9 +41,9 @@
 				<aui:select label="counter.month" name="searchMonth">
 					<aui:option selected="<%=true%>" value="<%=0%>">Select month</aui:option>
 					<%
-						for (Month month : Month.values()) {
+						for (Month monthValue : Month.values()) {
 					%>
-					<aui:option selected="<%=searchMonth == month.getId() ? true:false%>" value="<%=month.getId()%>"><%=month.name()%></aui:option>
+					<aui:option selected="<%=searchMonth == monthValue.getId() ? true:false%>" value="<%=monthValue.getId()%>"><%=monthValue.name()%></aui:option>
 					<%
 						}
 					%>
@@ -57,9 +53,9 @@
 				<aui:select label="counter.year" name="searchYear">
 					<aui:option selected="<%=true%>" value="<%=0%>">Select year</aui:option>
 					<%
-						for (Integer year : Helper.getListOfYears(10)) {
+						for (Integer yearValue : Helper.getListOfYears(10)) {
 					%>
-					<aui:option selected="<%=searchYear == year ? true:false%>" value="<%=year%>"><%=year%></aui:option>
+					<aui:option selected="<%=searchYear == yearValue ? true:false%>" value="<%=yearValue%>"><%=yearValue%></aui:option>
 					<%
 						}
 					%>
@@ -129,7 +125,7 @@
 			<aui:input name="searchMonth" type="hidden" value="<%=searchMonth %>"/>
 				<aui:select label="counter.service" name="service">
 					<%
-						for (Service service : Service.values()) {
+						for (ServiceType service : ServiceType.values()) {
 					%>
 					<aui:option selected="<%=true%>" value="<%=service.getId()%>"><%=service.getDescription()%></aui:option>
 					<%
@@ -140,9 +136,9 @@
 			<aui:column>
 				<aui:select label="counter.month" name="month">
 					<%
-						for (Month month : Month.values()) {
+						for (Month monthValue : Month.values()) {
 					%>
-					<aui:option selected="<%=true%>" value="<%=month.getId()%>"><%=month.name()%></aui:option>
+					<aui:option selected="<%=true%>" value="<%=monthValue.getId()%>"><%=monthValue.name()%></aui:option>
 					<%
 						}
 					%>
@@ -151,9 +147,9 @@
 			<aui:column>
 				<aui:select label="counter.year" name="year">
 					<%
-						for (Integer year : Helper.getListOfYears(10)) {
+						for (Integer yearValue : Helper.getListOfYears(10)) {
 					%>
-					<aui:option selected="<%=year==Helper.getCurrentYear()? true : false%>" value="<%=year%>"><%=year%></aui:option>
+					<aui:option selected="<%=yearValue==Helper.getCurrentYear()? true : false%>" value="<%=yearValue%>"><%=yearValue%></aui:option>
 					<%
 						}
 					%>
